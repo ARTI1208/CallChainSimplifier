@@ -2,7 +2,7 @@ class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: E
 
     init {
         if (operand1.returnType != operand2.returnType || operand1.returnType != sign.operands) {
-            throw Exception("Invalid types")
+            throw Exception("Invalid types: ${operand1.returnType} ${sign.operands} ${operand2.returnType}")
         }
     }
 
@@ -11,7 +11,7 @@ class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: E
     }
 
     override fun toString(): String {
-        return operand1.eval().toString() + sign.text + operand2.eval().toString()
+        return "(" + operand1.eval().toString() + sign.text + operand2.eval().toString() + ")"
     }
 
     fun isValid(): Boolean {
@@ -31,8 +31,8 @@ class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: E
         GREATER(">", Value.Type.INT, Value.Type.BOOL),
         LESS("<", Value.Type.INT, Value.Type.BOOL),
         EQUAL("=", Value.Type.INT, Value.Type.BOOL),
-        AND("&", Value.Type.INT, Value.Type.BOOL),
-        OR("|", Value.Type.INT, Value.Type.BOOL),;
+        AND("&", Value.Type.BOOL, Value.Type.BOOL),
+        OR("|", Value.Type.BOOL, Value.Type.BOOL),;
 
         override fun toString(): String {
             return text

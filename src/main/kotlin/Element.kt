@@ -8,24 +8,35 @@ object Element {
     var filter: String = TRUE_FILTER
         private set
 
+    val filters = mutableListOf<BinaryExpression>()
+
     fun applyFilter(f: BinaryExpression) {
         require(f.returnType == Value.Type.BOOL)
+
+        filters.add(f)
+
         filter = when (filter) {
-            TRUE_FILTER -> "($f)";
-            FALSE_FILTER -> FALSE_FILTER;
-            else -> "$filter&($f)";
+            TRUE_FILTER -> "$f"
+            FALSE_FILTER -> FALSE_FILTER
+            else -> "($filter&$f)"
         }
     }
 
     var map = MAP_DEFAULT
         private set
 
+    val transformations = mutableListOf<BinaryExpression>()
+
     fun applyTransformation(t: BinaryExpression) {
         require(t.returnType == Value.Type.INT)
 
+        transformations.add(t)
+
+        val previous = map
+
         when {
-            t.operand1 is ElementExpression -> map = "($map)${t.sign}${t.operand2}"
-            t.operand2 is ElementExpression -> map = "${t.operand1}${t.sign}($map)"
+            t.operand1 is ElementExpression -> map = "($previous${t.sign}${t.operand2})"
+            t.operand2 is ElementExpression -> map = "(${t.operand1}${t.sign}$previous)"
             else -> map = t.eval().toString()
         }
     }
