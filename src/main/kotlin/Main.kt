@@ -3,6 +3,7 @@ import grammar.LexerParser
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.antlr.v4.runtime.tree.TerminalNode
+import java.util.*
 import kotlin.reflect.KProperty1
 
 fun main() {
@@ -27,7 +28,8 @@ fun main() {
             when (val child = it.children[0]) {
                 is LexerParser.MapCallContext -> {
                     try {
-                        evaluateExpression(child.expression())
+                        val res = evaluateExpression(child.expression())
+                        Element.applyTransformation(res)
                     } catch (e: Exception) {
                         println("TYPE ERROR: " + e.message)
                         return
@@ -46,6 +48,10 @@ fun main() {
     }
 
     println(Element)
+    println(Element.transformations.size)
+    Element.transformations.forEach {
+        println(it.eval().toString())
+    }
 }
 
 val callToParam = mapOf(
@@ -72,12 +78,13 @@ fun evaluateExpression(expressionContext: LexerParser.ExpressionContext): Expres
         expressionContext.text == "element" -> {
             require(checkHasParentOfType(expressionContext, Value.Type.INT))
 
-            return ElementExpression(Element.map)
+            return ElementExpression(Element.transformations.last())
+//            return ElementExpression("element")
         }
         expressionContext.constantExpression() != null -> {
             require(checkHasParentOfType(expressionContext, Value.Type.INT))
 
-            return ConstantExpression(expressionContext.constantExpression())
+            return ElementExpression(Expression.ZeroExpression, 0, 0, expressionContext.constantExpression().text.toInt())
         }
         expressionContext.binaryExpression() != null -> {
 
@@ -114,14 +121,9 @@ fun applyBinaryOperation(
 
     val sign = BinaryExpression.Sign.values().find { it.text == signNode.text } ?: throw Exception("Unknown sign")
 
-    val result = BinaryExpression(evaluateExpression(expr), sign, evaluateExpression(expr2))
+    val result = BinaryExpression(evaluateExpression(expr), sign, evaluateExpression(expr2)).eval()
 
-    if (checkDirectChild(binaryExpression)) {
-        when (sign.returnType) {
-            Value.Type.INT -> Element.applyTransformation(result)
-            Value.Type.BOOL -> Element.applyFilter(result)
-        }
-    }
+
 
     return result
 }

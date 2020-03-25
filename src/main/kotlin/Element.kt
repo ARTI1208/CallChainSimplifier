@@ -1,7 +1,7 @@
 object Element {
 
-    public const val TRUE_FILTER = "(1 > 0)"
-    public const val FALSE_FILTER = "(1 < 0)"
+    public const val TRUE_FILTER = "(1>0)"
+    public const val FALSE_FILTER = "(1<0)"
 
     public const val MAP_DEFAULT = "element"
 
@@ -25,23 +25,41 @@ object Element {
     var map = MAP_DEFAULT
         private set
 
-    val transformations = mutableListOf<BinaryExpression>()
+    val transformations = mutableListOf<Expression>()
 
-    fun applyTransformation(t: BinaryExpression) {
+    val defaultMapExpression = ElementExpression("element")
+
+    init {
+        transformations.add(defaultMapExpression)
+    }
+
+    fun applyTransformation(t: Expression) {
         require(t.returnType == Value.Type.INT)
 
-        transformations.add(t)
+        if (filter == FALSE_FILTER) {
+            map = MAP_DEFAULT
+            return
+        }
+
+        transformations.add(t.eval())
 
         val previous = map
 
-        when {
-            t.operand1 is ElementExpression -> map = "($previous${t.sign}${t.operand2})"
-            t.operand2 is ElementExpression -> map = "(${t.operand1}${t.sign}$previous)"
-            else -> map = t.eval().toString()
+//        println("t:"+t.toString())
+//        println("p:"+map)
+
+        map = when {
+
+            else -> t.eval().toString()
         }
+
+//        println("m:"+map)
     }
 
+    var expr: ElementExpression = ElementExpression("element")
+
     override fun toString(): String {
-        return "filter{$filter}%>%map{$map}"
+        return "filter{$filter}%>%map{${transformations.last()}}"
     }
 }
+
