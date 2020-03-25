@@ -18,6 +18,7 @@ dependencies {
 
     implementation(kotlin("stdlib-jdk8"))
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.3.70")
+    implementation(kotlin("reflect"))
 }
 
 tasks {

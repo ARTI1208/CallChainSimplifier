@@ -3,20 +3,24 @@ import grammar.LexerParser
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.antlr.v4.runtime.tree.TerminalNode
-import java.util.*
-import kotlin.reflect.KProperty1
 
 fun main() {
 
     val lexer = LexerLexer(CharStreams.fromString(readLine()))
     val tokens = CommonTokenStream(lexer as TokenSource)
     val parser = LexerParser(tokens as TokenStream)
-    val tree = parser.callChain()
+    parser.errorHandler = GrammarErrorHandler()
 
     val listener = GrammarListener()
 
-    val walker = ParseTreeWalker()
-    walker.walk(listener, tree)
+    try {
+        val tree = parser.callChain()
+        val walker = ParseTreeWalker()
+        walker.walk(listener, tree)
+    } catch (e: Exception) {
+        println("SYNTAX ERROR")
+        return
+    }
 
     if (listener.hasErrors) {
         println("SYNTAX ERROR")
@@ -31,15 +35,16 @@ fun main() {
                         val res = evaluateExpression(child.expression())
                         Element.applyTransformation(res)
                     } catch (e: Exception) {
-                        println("TYPE ERROR: " + e.message)
+                        println("TYPE ERROR")
                         return
                     }
                 }
                 is LexerParser.FilterCallContext -> {
                     try {
-                        evaluateExpression(child.expression())
+                        val res = evaluateExpression(child.expression())
+                        Element.applyFilter(res)
                     } catch (e: Exception) {
-                        println("TYPE ERROR: " + e.message)
+                        println("TYPE ERROR")
                         return
                     }
                 }
@@ -48,10 +53,6 @@ fun main() {
     }
 
     println(Element)
-    println(Element.transformations.size)
-    Element.transformations.forEach {
-        println(it.eval().toString())
-    }
 }
 
 val callToParam = mapOf(
@@ -78,19 +79,19 @@ fun evaluateExpression(expressionContext: LexerParser.ExpressionContext): Expres
         expressionContext.text == "element" -> {
             require(checkHasParentOfType(expressionContext, Value.Type.INT))
 
-            return ElementExpression(Element.transformations.last())
-//            return ElementExpression("element")
+            return Element.transformations.last()
         }
         expressionContext.constantExpression() != null -> {
             require(checkHasParentOfType(expressionContext, Value.Type.INT))
 
-            return ElementExpression(Expression.ZeroExpression, 0, 0, expressionContext.constantExpression().text.toInt())
+            return ElementExpression(0, 0, expressionContext.constantExpression().text.toInt())
         }
         expressionContext.binaryExpression() != null -> {
 
             val binaryExpr = expressionContext.binaryExpression()
 
-            val binaryExpression = applyBinaryOperation(binaryExpr.expression(0), binaryExpr.OPERATION(), binaryExpr.expression(1), binaryExpr)
+            val binaryExpression =
+                applyBinaryOperation(binaryExpr.expression(0), binaryExpr.OPERATION(), binaryExpr.expression(1))
             require(checkHasParentOfType(binaryExpr, binaryExpression.returnType))
             return binaryExpression
         }
@@ -100,30 +101,12 @@ fun evaluateExpression(expressionContext: LexerParser.ExpressionContext): Expres
     }
 }
 
-tailrec fun checkDirectChild(child: RuleContext): Boolean {
-    if (child.parent == null || child.parent is LexerParser.BinaryExpressionContext)
-        return false
-
-
-    if (child.parent is LexerParser.CallContext) {
-        return true
-    }
-
-    return checkDirectChild(child.parent)
-}
-
 fun applyBinaryOperation(
     expr: LexerParser.ExpressionContext,
     signNode: TerminalNode,
-    expr2: LexerParser.ExpressionContext,
-    binaryExpression: LexerParser.BinaryExpressionContext
+    expr2: LexerParser.ExpressionContext
 ): Expression {
 
     val sign = BinaryExpression.Sign.values().find { it.text == signNode.text } ?: throw Exception("Unknown sign")
-
-    val result = BinaryExpression(evaluateExpression(expr), sign, evaluateExpression(expr2)).eval()
-
-
-
-    return result
+    return BinaryExpression(evaluateExpression(expr), sign, evaluateExpression(expr2)).eval()
 }

@@ -1,7 +1,7 @@
-import java.lang.Exception
 import kotlin.math.absoluteValue
+import kotlin.reflect.full.isSubclassOf
 
-class ElementExpression(val value: String, count: Int = 1 , power: Int = 1, real: Int = 0) : Expression() {
+open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Expression() {
 
     var count: Int = 1
         private set
@@ -12,32 +12,16 @@ class ElementExpression(val value: String, count: Int = 1 , power: Int = 1, real
     var real: Int = 0
         private set
 
-    lateinit var rootExpr: Expression
-        private set
+    val index: Int
 
     init {
-        init(Element.defaultMapExpression, count, power, real)
-    }
+        this.count = count
+        this.power = power
+        this.real = real
+        if (count == 0)
+            this.power = 0
 
-    constructor(e: Expression, count: Int = 1, power: Int = 1, real: Int = 0) : this(e.toString(), count, power, real) {
-        init(e, count, power, real)
-    }
-
-    private fun init(e: Expression, count: Int, power: Int, real: Int) {
-        println("RootClass: ${if (e == null) "null" else e.javaClass}; value: $e")
-        if (e is ElementExpression) {
-            this.count = count * e.count
-            this.power = power
-            this.real = real
-        } else {
-            this.count = count
-            this.power = power
-            this.real = real
-        }
-
-        println("newElExpr: " + toString())
-
-        rootExpr = e
+        index = Element.transformations.size - 1
     }
 
     override fun eval(): Expression {
@@ -49,16 +33,22 @@ class ElementExpression(val value: String, count: Int = 1 , power: Int = 1, real
 
     override fun toString(): String {
 
-        val imaginary =  when {
-            count == 1 && power == 1 -> value
-            power == 1 -> "($count*$value)"
-            else -> {
-                var builder = value
+        if (count == 0) {
+            return real.toString()
+        }
 
-                println("Hello")
+        val from = Element.transformations[index]
+
+        val default = if (from::class.isSubclassOf(this::class)) "element" else from.toString()
+
+        val imaginary = when {
+            count == 1 && power == 1 -> default
+            power == 1 -> "($count*$default)"
+            else -> {
+                var builder = default
 
                 repeat(power - 1) {
-                    builder = "($builder*$value)"
+                    builder = "($builder*$default)"
                 }
 
                 if (count > 1)
@@ -68,15 +58,9 @@ class ElementExpression(val value: String, count: Int = 1 , power: Int = 1, real
             }
         }
 
-        println("im: "+imaginary)
-
         return if (real == 0) imaginary else {
             if (real < 0) {
                 "($imaginary-${real.absoluteValue})"
-//                if (count != 1 || power != 1)
-//                    "(($imaginary)-${real.absoluteValue})"
-//                else
-//
             } else {
                 "($imaginary+${real.absoluteValue})"
             }
@@ -85,7 +69,6 @@ class ElementExpression(val value: String, count: Int = 1 , power: Int = 1, real
 
     override fun plus(e: Expression): Expression {
         return when (e) {
-            is ConstantExpression -> plus(e)
             is ElementExpression -> plus(e)
             is BinaryExpression -> BinaryExpression(this, BinaryExpression.Sign.PLUS, e).eval()
             else -> throw Exception("Unknown expr")
@@ -94,7 +77,6 @@ class ElementExpression(val value: String, count: Int = 1 , power: Int = 1, real
 
     override fun minus(e: Expression): Expression {
         return when (e) {
-            is ConstantExpression -> minus(e)
             is ElementExpression -> minus(e)
             is BinaryExpression -> BinaryExpression(this, BinaryExpression.Sign.MINUS, e).eval()
             else -> throw Exception("Unknown expr")
@@ -103,60 +85,59 @@ class ElementExpression(val value: String, count: Int = 1 , power: Int = 1, real
 
     override fun times(e: Expression): Expression {
         return when (e) {
-            is ConstantExpression -> times(e)
             is ElementExpression -> times(e)
             is BinaryExpression -> BinaryExpression(this, BinaryExpression.Sign.MULTIPLY, e).eval()
             else -> throw Exception("Unknown expr")
         }
     }
 
-    operator fun plus(constant: ConstantExpression): ElementExpression {
-        return ElementExpression(rootExpr, count, power, real + constant.value)
-    }
-
-    operator fun minus(constant: ConstantExpression): ElementExpression {
-        println("min2")
-        val res = ElementExpression(rootExpr, count, power, real - constant.value)
-        println(res.toString())
-        return res
-    }
-
-    operator fun times(constant: ConstantExpression): ElementExpression {
-        return ElementExpression(rootExpr, count * constant.value, power, real * constant.value)
-    }
-
     operator fun plus(element: ElementExpression): Expression {
-        if (power != element.power || value != element.value) {
+        if (count * element.count == 0) {
+            val thisFactor = if (count == 0) 0 else 1
+            val elementFactor = if (element.count == 0) 0 else 1
+
+            return ElementExpression(
+                count + element.count,
+                thisFactor * power + elementFactor * element.power,
+                real + element.real
+            )
+        }
+
+        if (power != element.power) {
             return BinaryExpression(this, BinaryExpression.Sign.PLUS, element)
         }
 
-        return ElementExpression(rootExpr, count + element.count, element.power, real + element.real)
+        return ElementExpression(count + element.count, power, real + element.real)
     }
 
     operator fun minus(element: ElementExpression): Expression {
+        if (count * element.count == 0) {
+            val thisFactor = if (count == 0) 0 else 1
+            val elementFactor = if (element.count == 0) 0 else 1
 
-        println("min")
-
-        if (power != element.power || value != element.value) {
-            return BinaryExpression(this, BinaryExpression.Sign.MINUS, element)
+            return ElementExpression(
+                count + element.count,
+                thisFactor * power + elementFactor * element.power,
+                real - element.real
+            )
         }
 
-        return ElementExpression(rootExpr, count - element.count, element.power, real - element.real)
+        return ElementExpression(count - element.count, element.power, real - element.real)
     }
 
-    operator fun times(element: ElementExpression): BinaryExpression {
+    operator fun times(element: ElementExpression): Expression {
         return BinaryExpression(
-            ElementExpression(
-                rootExpr,
-                count * element.count,
-                power + element.power,
-                real * element.real
-            ), BinaryExpression.Sign.PLUS,
+            ElementExpression(count * element.count, power + element.power, real * element.real),
+            BinaryExpression.Sign.PLUS,
             BinaryExpression(
-                ElementExpression(rootExpr, real, element.count * power, 0),
+                ElementExpression(
+                    real * element.count,
+                    element.power,
+                    0
+                ),
                 BinaryExpression.Sign.PLUS,
-                ElementExpression(element.rootExpr, element.real, count * element.power, 0)
-            )
-        )
+                ElementExpression(element.real * count, power, 0)
+            ).eval()
+        ).eval()
     }
 }
