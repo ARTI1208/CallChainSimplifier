@@ -1,11 +1,13 @@
 object Element {
 
-    const val TRUE_FILTER = "(1>0)"
-    const val FALSE_FILTER = "(1<0)"
+    val transformations = mutableListOf<Expression>()
+
+    val TRUE_FILTER = BinaryExpression(constantOne, BinaryExpression.Sign.GREATER, constantZero)
+    val FALSE_FILTER = BinaryExpression(constantOne, BinaryExpression.Sign.LESS, constantZero)
 
     const val MAP_DEFAULT = "element"
 
-    var filter: String = TRUE_FILTER
+    var filter: Expression = TRUE_FILTER
         private set
 
     val filters = mutableListOf<Expression>()
@@ -14,9 +16,10 @@ object Element {
         require(f.returnType == Value.Type.BOOL)
 
         filter = when (filter) {
-            TRUE_FILTER -> "$f"
+            TRUE_FILTER -> f
             FALSE_FILTER -> FALSE_FILTER
-            else -> "($filter&$f)"
+//            else -> "($filter&$f)"
+            else -> BinaryExpression(filter, BinaryExpression.Sign.AND, f)
         }
 
         filters.add(f)
@@ -24,8 +27,6 @@ object Element {
 
     var map = MAP_DEFAULT
         private set
-
-    val transformations = mutableListOf<Expression>()
 
     val defaultMapExpression = object : ElementExpression() {
         override fun toString(): String {

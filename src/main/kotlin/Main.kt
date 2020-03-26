@@ -53,6 +53,7 @@ fun main() {
     }
 
     println(Element)
+    println(Element.filter == Element.FALSE_FILTER)
 }
 
 val callToParam = mapOf(

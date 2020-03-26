@@ -21,10 +21,12 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
         if (count == 0)
             this.power = 0
 
-        index = Element.transformations.size - 1
+        @Suppress("UNNECESSARY_SAFE_CALL", "USELESS_ELVIS")
+//        index = Element.transformations?.size?.minus(1) ?: -1
+        index = 0
     }
 
-    override fun eval(): Expression {
+    override fun doEval(): Expression {
         return this
     }
 
@@ -37,9 +39,12 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
             return real.toString()
         }
 
-        val from = Element.transformations[index]
+//        val default = if (index >= 0) {
+//            if (Element.transformations[index]::class.isSubclassOf(this::class)) "element" else Element.transformations[index].toString()
+//        } else
+//            "element"
 
-        val default = if (from::class.isSubclassOf(this::class)) "element" else from.toString()
+        val default = "element"
 
         val imaginary = when {
             count == 1 && power == 1 -> default
@@ -67,6 +72,7 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
         }
     }
 
+
     override fun plus(e: Expression): Expression {
         return when (e) {
             is ElementExpression -> plus(e)
@@ -91,6 +97,10 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
         }
     }
 
+    override fun unaryMinus(): ElementExpression {
+        return ElementExpression(-count, power, -real)
+    }
+
     operator fun plus(element: ElementExpression): Expression {
         if (count * element.count == 0) {
             val thisFactor = if (count == 0) 0 else 1
@@ -111,18 +121,28 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
     }
 
     operator fun minus(element: ElementExpression): Expression {
+        println("t: $this --- $element")
         if (count * element.count == 0) {
             val thisFactor = if (count == 0) 0 else 1
             val elementFactor = if (element.count == 0) 0 else 1
 
             return ElementExpression(
-                count + element.count,
+                count - element.count,
                 thisFactor * power + elementFactor * element.power,
                 real - element.real
             )
         }
 
-        return ElementExpression(count - element.count, element.power, real - element.real)
+        return if (power == element.power)
+            ElementExpression(count - element.count, element.power, real - element.real)
+        else {
+            println("kk")
+            (BinaryExpression(
+                ElementExpression(count, power, 0),
+                BinaryExpression.Sign.MINUS,
+                ElementExpression(element.count, element.power, 0)
+            ).also { it.isEvaluable = false } + ConstantExpression(real - element.real)).eval()
+        }
     }
 
     operator fun times(element: ElementExpression): Expression {
@@ -139,5 +159,35 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
                 ElementExpression(element.real * count, power, 0)
             ).eval()
         ).eval()
+    }
+
+    operator fun compareTo(element: ElementExpression): Int {
+        if (count * element.count != 0 && power != element.power) return power - element.power
+        if (count != element.count) return count - element.count
+        if (real != element.real) return real - element.real
+
+        return 0
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        other?: return false
+        if (!other::class.isSubclassOf(this::class) && !this::class.isSubclassOf(other::class)) return false
+
+        other as ElementExpression
+
+        if (count != other.count) return false
+        if (power != other.power) return false
+        if (real != other.real) return false
+
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = count
+        result = 31 * result + power
+        result = 31 * result + real
+        return result
     }
 }
