@@ -1,8 +1,7 @@
 package ru.art2000.callchainsimplifier
 
-import grammar.LexerBaseListener
-import grammar.LexerParser
-import org.antlr.v4.runtime.ParserRuleContext
+import ru.art2000.callchainsimplifier.grammar.LexerBaseListener
+import ru.art2000.callchainsimplifier.grammar.LexerParser
 import org.antlr.v4.runtime.tree.ErrorNode
 
 class GrammarListener : LexerBaseListener() {

@@ -1,7 +1,7 @@
 package ru.art2000.callchainsimplifier
 
-import grammar.LexerLexer
-import grammar.LexerParser
+import ru.art2000.callchainsimplifier.grammar.LexerLexer
+import ru.art2000.callchainsimplifier.grammar.LexerParser
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.antlr.v4.runtime.tree.TerminalNode
