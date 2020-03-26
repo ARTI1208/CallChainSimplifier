@@ -1,10 +1,11 @@
+package ru.art2000.callchainsimplifier.expression
+
 import org.junit.Test
 
-internal class ElementExpressionTest {
+class BinaryExpressionTest {
 
     @Test
-    fun unaryMinus() {
-
+    fun eval() {
     }
 
     @Test
@@ -20,6 +21,6 @@ internal class ElementExpressionTest {
     }
 
     @Test
-    fun compareTo() {
+    fun unaryMinus() {
     }
 }

@@ -1,13 +1,12 @@
+package ru.art2000.callchainsimplifier.expression
+
 import org.junit.Test
-import ru.art2000.callchainsimplifier.expression.ConstantExpression
-import ru.art2000.callchainsimplifier.expression.ElementExpression
-import ru.art2000.callchainsimplifier.expression.constantOne
-import ru.art2000.callchainsimplifier.expression.constantZero
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-internal class ConstantExpressionTest {
+
+class ConstantExpressionTest {
 
     @Test
     fun compatibility() {

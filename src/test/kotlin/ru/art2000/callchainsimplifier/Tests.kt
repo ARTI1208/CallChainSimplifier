@@ -1,3 +1,5 @@
+package ru.art2000.callchainsimplifier
+
 import org.junit.Test
 import kotlin.test.assertTrue
 

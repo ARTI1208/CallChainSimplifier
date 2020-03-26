@@ -179,6 +179,23 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
     }
 
     operator fun times(element: ElementExpression): Expression {
+
+        var secondTerm = ElementExpression(
+            real * element.count,
+            element.power,
+            0
+        )
+
+        var thirdTerm = ElementExpression(
+            element.real * count,
+            power,
+            0
+        )
+
+        if (power > element.power)
+            secondTerm = thirdTerm.also { thirdTerm = secondTerm }
+
+
         return BinaryExpression(
             ElementExpression(
                 count * element.count,
@@ -187,21 +204,14 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
             ),
             BinaryExpression.Sign.PLUS,
             BinaryExpression(
-                ElementExpression(
-                    real * element.count,
-                    element.power,
-                    0
-                ),
+                secondTerm,
                 BinaryExpression.Sign.PLUS,
-                ElementExpression(
-                    element.real * count,
-                    power,
-                    0
-                )
+                thirdTerm
             ).eval()
         ).eval()
     }
 
+    //TODO: Treating array element as positive number - is it valid?
     operator fun compareTo(element: ElementExpression): Int {
         if (count * element.count != 0 && power != element.power) return power - element.power
         if (count != element.count) return count - element.count
