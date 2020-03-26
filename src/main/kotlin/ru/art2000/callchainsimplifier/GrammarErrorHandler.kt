@@ -1,3 +1,5 @@
+package ru.art2000.callchainsimplifier
+
 import org.antlr.v4.runtime.*
 
 class GrammarErrorHandler : BailErrorStrategy() {

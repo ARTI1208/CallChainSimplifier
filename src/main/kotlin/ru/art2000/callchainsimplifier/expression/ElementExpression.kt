@@ -1,3 +1,6 @@
+package ru.art2000.callchainsimplifier.expression
+
+import ru.art2000.callchainsimplifier.Value
 import kotlin.math.absoluteValue
 import kotlin.reflect.full.isSubclassOf
 
@@ -22,7 +25,7 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
             this.power = 0
 
         @Suppress("UNNECESSARY_SAFE_CALL", "USELESS_ELVIS")
-//        index = Element.transformations?.size?.minus(1) ?: -1
+//        index = ru.art2000.callchainsimplifier.Element.transformations?.size?.minus(1) ?: -1
         index = 0
     }
 
@@ -40,7 +43,7 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
         }
 
 //        val default = if (index >= 0) {
-//            if (Element.transformations[index]::class.isSubclassOf(this::class)) "element" else Element.transformations[index].toString()
+//            if (ru.art2000.callchainsimplifier.Element.transformations[index]::class.isSubclassOf(this::class)) "element" else ru.art2000.callchainsimplifier.Element.transformations[index].toString()
 //        } else
 //            "element"
 
@@ -76,7 +79,11 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
     override fun plus(e: Expression): Expression {
         return when (e) {
             is ElementExpression -> plus(e)
-            is BinaryExpression -> BinaryExpression(this, BinaryExpression.Sign.PLUS, e).eval()
+            is BinaryExpression -> BinaryExpression(
+                this,
+                BinaryExpression.Sign.PLUS,
+                e
+            ).eval()
             else -> throw Exception("Unknown expr")
         }
     }
@@ -84,7 +91,11 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
     override fun minus(e: Expression): Expression {
         return when (e) {
             is ElementExpression -> minus(e)
-            is BinaryExpression -> BinaryExpression(this, BinaryExpression.Sign.MINUS, e).eval()
+            is BinaryExpression -> BinaryExpression(
+                this,
+                BinaryExpression.Sign.MINUS,
+                e
+            ).eval()
             else -> throw Exception("Unknown expr")
         }
     }
@@ -92,7 +103,11 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
     override fun times(e: Expression): Expression {
         return when (e) {
             is ElementExpression -> times(e)
-            is BinaryExpression -> BinaryExpression(this, BinaryExpression.Sign.MULTIPLY, e).eval()
+            is BinaryExpression -> BinaryExpression(
+                this,
+                BinaryExpression.Sign.MULTIPLY,
+                e
+            ).eval()
             else -> throw Exception("Unknown expr")
         }
     }
@@ -114,10 +129,18 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
         }
 
         if (power != element.power) {
-            return BinaryExpression(this, BinaryExpression.Sign.PLUS, element)
+            return BinaryExpression(
+                this,
+                BinaryExpression.Sign.PLUS,
+                element
+            )
         }
 
-        return ElementExpression(count + element.count, power, real + element.real)
+        return ElementExpression(
+            count + element.count,
+            power,
+            real + element.real
+        )
     }
 
     operator fun minus(element: ElementExpression): Expression {
@@ -134,20 +157,34 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
         }
 
         return if (power == element.power)
-            ElementExpression(count - element.count, element.power, real - element.real)
+            ElementExpression(
+                count - element.count,
+                element.power,
+                real - element.real
+            )
         else {
             println("kk")
             (BinaryExpression(
                 ElementExpression(count, power, 0),
                 BinaryExpression.Sign.MINUS,
-                ElementExpression(element.count, element.power, 0)
-            ).also { it.isEvaluable = false } + ConstantExpression(real - element.real)).eval()
+                ElementExpression(
+                    element.count,
+                    element.power,
+                    0
+                )
+            ).also { it.isEvaluable = false } + ConstantExpression(
+                real - element.real
+            )).eval()
         }
     }
 
     operator fun times(element: ElementExpression): Expression {
         return BinaryExpression(
-            ElementExpression(count * element.count, power + element.power, real * element.real),
+            ElementExpression(
+                count * element.count,
+                power + element.power,
+                real * element.real
+            ),
             BinaryExpression.Sign.PLUS,
             BinaryExpression(
                 ElementExpression(
@@ -156,7 +193,11 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
                     0
                 ),
                 BinaryExpression.Sign.PLUS,
-                ElementExpression(element.real * count, power, 0)
+                ElementExpression(
+                    element.real * count,
+                    power,
+                    0
+                )
             ).eval()
         ).eval()
     }

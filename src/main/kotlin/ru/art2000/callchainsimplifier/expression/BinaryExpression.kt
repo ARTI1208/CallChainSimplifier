@@ -1,3 +1,7 @@
+package ru.art2000.callchainsimplifier.expression
+
+import ru.art2000.callchainsimplifier.Element
+import ru.art2000.callchainsimplifier.Value
 import kotlin.reflect.full.isSubclassOf
 
 class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: Expression) : Expression() {
@@ -9,23 +13,43 @@ class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: E
     }
 
     override fun plus(e: Expression): Expression {
-        return BinaryExpression(this, Sign.PLUS, e).eval()
+        return BinaryExpression(
+            this,
+            Sign.PLUS,
+            e
+        ).eval()
     }
 
     override fun minus(e: Expression): Expression {
-        return BinaryExpression(this, Sign.MINUS, e).eval()
+        return BinaryExpression(
+            this,
+            Sign.MINUS,
+            e
+        ).eval()
     }
 
     override fun times(e: Expression): Expression {
-        return BinaryExpression(this, Sign.MULTIPLY, e).eval()
+        return BinaryExpression(
+            this,
+            Sign.MULTIPLY,
+            e
+        ).eval()
     }
 
     override fun unaryMinus(): Expression {
-        return BinaryExpression(-constantOne, Sign.MULTIPLY, this).eval()
+        return BinaryExpression(
+            -constantOne,
+            Sign.MULTIPLY,
+            this
+        ).eval()
     }
 
     override fun doEval(): Expression {
-        if (sign !in listOf(Sign.PLUS, Sign.MINUS, Sign.MULTIPLY)) {
+        if (sign !in listOf(
+                Sign.PLUS,
+                Sign.MINUS,
+                Sign.MULTIPLY
+            )) {
             return logicEval()
         }
 
@@ -38,7 +62,8 @@ class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: E
         if (e2::class.isSubclassOf(ElementExpression::class) && (e2 as ElementExpression).let { it.count == 0 && it.real == 0 })
             return e1
 
-        if (!e1::class.isSubclassOf(ElementExpression::class) || !e2::class.isSubclassOf(ElementExpression::class)) {
+        if (!e1::class.isSubclassOf(ElementExpression::class) || !e2::class.isSubclassOf(
+                ElementExpression::class)) {
             return this
         }
 
@@ -58,18 +83,30 @@ class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: E
             val simplified = (operand1 - operand2).eval()
             if (simplified is BinaryExpression) {
                 println("tt")
-                return BinaryExpression(simplified.operand1, sign, -simplified.operand2)
+                return BinaryExpression(
+                    simplified.operand1,
+                    sign,
+                    -simplified.operand2
+                )
             }
             if (simplified::class.isSubclassOf(ElementExpression::class)) {
                 simplified as ElementExpression
                 println("rrr")
                 if (simplified < constantZero)
-                    return BinaryExpression(-simplified, sign, constantZero)
+                    return BinaryExpression(
+                        -simplified,
+                        sign,
+                        constantZero
+                    )
                 else if (simplified == constantZero)
                     return Element.FALSE_FILTER
             }
             println("lll")
-            return BinaryExpression(simplified, sign, constantZero)
+            return BinaryExpression(
+                simplified,
+                sign,
+                constantZero
+            )
         }
 
         if (sign == Sign.EQUAL) {
@@ -87,14 +124,26 @@ class BinaryExpression(val operand1: Expression, val sign: Sign, val operand2: E
                     println("hi")
                     if (simplified is BinaryExpression) {
                         println("hi2")
-                        return BinaryExpression(simplified.operand1, sign, -simplified.operand2)
+                        return BinaryExpression(
+                            simplified.operand1,
+                            sign,
+                            -simplified.operand2
+                        )
                     }
                     if (simplified::class.isSubclassOf(ElementExpression::class) && (simplified as ElementExpression) < constantZero) {
                         println("hi3")
-                        return BinaryExpression(-simplified, sign, constantZero)
+                        return BinaryExpression(
+                            -simplified,
+                            sign,
+                            constantZero
+                        )
                     }
 
-                    return BinaryExpression(simplified, sign, constantZero)
+                    return BinaryExpression(
+                        simplified,
+                        sign,
+                        constantZero
+                    )
                 }
             }
         }

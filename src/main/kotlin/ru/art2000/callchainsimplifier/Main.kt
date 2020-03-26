@@ -1,8 +1,13 @@
+package ru.art2000.callchainsimplifier
+
 import grammar.LexerLexer
 import grammar.LexerParser
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.antlr.v4.runtime.tree.TerminalNode
+import ru.art2000.callchainsimplifier.expression.BinaryExpression
+import ru.art2000.callchainsimplifier.expression.ElementExpression
+import ru.art2000.callchainsimplifier.expression.Expression
 
 fun main() {
 
@@ -32,7 +37,8 @@ fun main() {
             when (val child = it.children[0]) {
                 is LexerParser.MapCallContext -> {
                     try {
-                        val res = evaluateExpression(child.expression())
+                        val res =
+                            evaluateExpression(child.expression())
                         Element.applyTransformation(res)
                     } catch (e: Exception) {
                         println("TYPE ERROR")
@@ -41,7 +47,8 @@ fun main() {
                 }
                 is LexerParser.FilterCallContext -> {
                     try {
-                        val res = evaluateExpression(child.expression())
+                        val res =
+                            evaluateExpression(child.expression())
                         Element.applyFilter(res)
                     } catch (e: Exception) {
                         println("TYPE ERROR")
@@ -59,7 +66,10 @@ fun main() {
 val callToParam = mapOf(
     LexerParser.MapCallContext::class to listOf(Value.Type.INT),
     LexerParser.FilterCallContext::class to listOf(Value.Type.BOOL),
-    LexerParser.BinaryExpressionContext::class to listOf(Value.Type.INT, Value.Type.BOOL)
+    LexerParser.BinaryExpressionContext::class to listOf(
+        Value.Type.INT,
+        Value.Type.BOOL
+    )
 )
 
 tailrec fun checkHasParentOfType(child: RuleContext, type: Value.Type): Boolean {
@@ -78,22 +88,45 @@ tailrec fun checkHasParentOfType(child: RuleContext, type: Value.Type): Boolean 
 fun evaluateExpression(expressionContext: LexerParser.ExpressionContext): Expression {
     when {
         expressionContext.text == "element" -> {
-            require(checkHasParentOfType(expressionContext, Value.Type.INT))
+            require(
+                checkHasParentOfType(
+                    expressionContext,
+                    Value.Type.INT
+                )
+            )
 
             return Element.transformations.last()
         }
         expressionContext.constantExpression() != null -> {
-            require(checkHasParentOfType(expressionContext, Value.Type.INT))
+            require(
+                checkHasParentOfType(
+                    expressionContext,
+                    Value.Type.INT
+                )
+            )
 
-            return ElementExpression(0, 0, expressionContext.constantExpression().text.toInt())
+            return ElementExpression(
+                0,
+                0,
+                expressionContext.constantExpression().text.toInt()
+            )
         }
         expressionContext.binaryExpression() != null -> {
 
             val binaryExpr = expressionContext.binaryExpression()
 
             val binaryExpression =
-                applyBinaryOperation(binaryExpr.expression(0), binaryExpr.OPERATION(), binaryExpr.expression(1))
-            require(checkHasParentOfType(binaryExpr, binaryExpression.returnType))
+                applyBinaryOperation(
+                    binaryExpr.expression(0),
+                    binaryExpr.OPERATION(),
+                    binaryExpr.expression(1)
+                )
+            require(
+                checkHasParentOfType(
+                    binaryExpr,
+                    binaryExpression.returnType
+                )
+            )
             return binaryExpression
         }
         else -> {
@@ -109,5 +142,9 @@ fun applyBinaryOperation(
 ): Expression {
 
     val sign = BinaryExpression.Sign.values().find { it.text == signNode.text } ?: throw Exception("Unknown sign")
-    return BinaryExpression(evaluateExpression(expr), sign, evaluateExpression(expr2)).eval()
+    return BinaryExpression(
+        evaluateExpression(expr),
+        sign,
+        evaluateExpression(expr2)
+    ).eval()
 }

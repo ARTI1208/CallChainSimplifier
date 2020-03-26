@@ -1,3 +1,7 @@
+package ru.art2000.callchainsimplifier.expression
+
+import ru.art2000.callchainsimplifier.Value
+
 abstract class Expression {
 
     var isEvaluable: Boolean = true

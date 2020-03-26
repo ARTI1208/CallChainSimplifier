@@ -1,3 +1,5 @@
+package ru.art2000.callchainsimplifier
+
 import grammar.LexerBaseListener
 import grammar.LexerParser
 import org.antlr.v4.runtime.ParserRuleContext

@@ -1,9 +1,21 @@
+package ru.art2000.callchainsimplifier
+
+import ru.art2000.callchainsimplifier.expression.*
+
 object Element {
 
     val transformations = mutableListOf<Expression>()
 
-    val TRUE_FILTER = BinaryExpression(constantOne, BinaryExpression.Sign.GREATER, constantZero)
-    val FALSE_FILTER = BinaryExpression(constantOne, BinaryExpression.Sign.LESS, constantZero)
+    val TRUE_FILTER = BinaryExpression(
+        constantOne,
+        BinaryExpression.Sign.GREATER,
+        constantZero
+    )
+    val FALSE_FILTER = BinaryExpression(
+        constantOne,
+        BinaryExpression.Sign.LESS,
+        constantZero
+    )
 
     const val MAP_DEFAULT = "element"
 
@@ -19,7 +31,11 @@ object Element {
             TRUE_FILTER -> f
             FALSE_FILTER -> FALSE_FILTER
 //            else -> "($filter&$f)"
-            else -> BinaryExpression(filter, BinaryExpression.Sign.AND, f)
+            else -> BinaryExpression(
+                filter,
+                BinaryExpression.Sign.AND,
+                f
+            )
         }
 
         filters.add(f)
