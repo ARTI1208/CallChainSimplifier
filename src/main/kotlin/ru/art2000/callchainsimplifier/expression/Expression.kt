@@ -1,7 +1,5 @@
 package ru.art2000.callchainsimplifier.expression
 
-import ru.art2000.callchainsimplifier.Value
-
 abstract class Expression {
 
     var isEvaluable: Boolean = true
@@ -10,7 +8,7 @@ abstract class Expression {
 
     abstract fun doEval(): Expression
 
-    abstract val returnType: Value.Type
+    abstract val returnType: ValueType
 
     abstract operator fun plus(e: Expression): Expression
 

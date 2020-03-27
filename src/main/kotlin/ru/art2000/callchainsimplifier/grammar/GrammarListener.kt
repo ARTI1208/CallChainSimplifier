@@ -1,4 +1,4 @@
-package ru.art2000.callchainsimplifier
+package ru.art2000.callchainsimplifier.grammar
 
 import ru.art2000.callchainsimplifier.grammar.LexerBaseListener
 import ru.art2000.callchainsimplifier.grammar.LexerParser

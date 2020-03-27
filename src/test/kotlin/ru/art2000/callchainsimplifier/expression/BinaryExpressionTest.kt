@@ -1,7 +1,7 @@
 package ru.art2000.callchainsimplifier.expression
 
 import org.junit.Test
-import ru.art2000.callchainsimplifier.Element
+import ru.art2000.callchainsimplifier.Simplifier
 import kotlin.test.assertEquals
 
 class BinaryExpressionTest {
@@ -14,7 +14,7 @@ class BinaryExpressionTest {
     @Test
     fun logicEval() {
         assertEquals(
-            Element.TRUE_FILTER,
+            Simplifier.TRUE_FILTER,
             BinaryExpression(
                 ConstantExpression(5),
                 BinarySign.GREATER,
@@ -23,7 +23,7 @@ class BinaryExpressionTest {
         )
 
         assertEquals(
-            Element.TRUE_FILTER,
+            Simplifier.TRUE_FILTER,
             BinaryExpression(
                 ConstantExpression(-5),
                 BinarySign.LESS,
@@ -32,7 +32,7 @@ class BinaryExpressionTest {
         )
 
         assertEquals(
-            Element.FALSE_FILTER,
+            Simplifier.FALSE_FILTER,
             BinaryExpression(
                 ConstantExpression(-5),
                 BinarySign.EQUAL,
@@ -41,7 +41,7 @@ class BinaryExpressionTest {
         )
 
         assertEquals(
-            Element.FALSE_FILTER,
+            Simplifier.FALSE_FILTER,
             BinaryExpression(
                 ConstantExpression(3),
                 BinarySign.GREATER,
@@ -50,7 +50,7 @@ class BinaryExpressionTest {
         )
 
         assertEquals(
-            Element.TRUE_FILTER,
+            Simplifier.TRUE_FILTER,
             BinaryExpression(
                 ConstantExpression(3),
                 BinarySign.EQUAL,
@@ -59,7 +59,7 @@ class BinaryExpressionTest {
         )
 
         assertEquals(
-            Element.TRUE_FILTER,
+            Simplifier.TRUE_FILTER,
             BinaryExpression(
                 BinaryExpression(
                     ConstantExpression(3),
@@ -76,7 +76,7 @@ class BinaryExpressionTest {
         )
 
         assertEquals(
-            Element.FALSE_FILTER,
+            Simplifier.FALSE_FILTER,
             BinaryExpression(
                 BinaryExpression(
                     ConstantExpression(3),
@@ -108,6 +108,59 @@ class BinaryExpressionTest {
         )
 
         assertEquals(noEvalTest, noEvalTest.logicEval())
+
+
+        assertEquals(
+            BinaryExpression(
+                ElementExpression(),
+                BinarySign.EQUAL,
+                ConstantExpression(4)
+            ),
+            BinaryExpression(
+                ElementExpression(),
+                BinarySign.EQUAL,
+                ConstantExpression(4)
+            ).logicEval()
+        )
+
+        assertEquals(
+            BinaryExpression(
+                ElementExpression(),
+                BinarySign.EQUAL,
+                ConstantExpression(-4)
+            ),
+            BinaryExpression(
+                ElementExpression(),
+                BinarySign.EQUAL,
+                ConstantExpression(-4)
+            ).logicEval()
+        )
+
+        assertEquals(
+            BinaryExpression(
+                ElementExpression(),
+                BinarySign.EQUAL,
+                ConstantExpression(4)
+            ),
+            BinaryExpression(
+                ElementExpression(-1),
+                BinarySign.EQUAL,
+                ConstantExpression(-4)
+            ).logicEval()
+        )
+
+        assertEquals(
+            BinaryExpression(
+                ElementExpression(),
+                BinarySign.LESS,
+                ConstantExpression(-4)
+            ),
+            BinaryExpression(
+                ElementExpression(-1),
+                BinarySign.GREATER,
+                ConstantExpression(4)
+            ).logicEval()
+        )
     }
 
     @Test

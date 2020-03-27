@@ -1,5 +1,7 @@
-// Generated from /home/arti1208/Coding/Kotlin/CallChainSimplifier/src/ru.art2000.callchainsimplifier.main/antlr/Lexer.g4 by ANTLR 4.8
-package ru.art2000.callchainsimplifier.grammar;
+// Generated from ru/art2000/callchainsimplifier/grammar/Lexer.g4 by ANTLR 4.8
+
+    package ru.art2000.callchainsimplifier.grammar;
+
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

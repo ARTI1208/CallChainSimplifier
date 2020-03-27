@@ -1,10 +1,15 @@
-// Generated from /home/arti1208/Coding/Kotlin/CallChainSimplifier/src/ru.art2000.callchainsimplifier.main/antlr/Lexer.g4 by ANTLR 4.8
-package ru.art2000.callchainsimplifier.grammar;
+// Generated from ru/art2000/callchainsimplifier/grammar/Lexer.g4 by ANTLR 4.8
+
+    package ru.art2000.callchainsimplifier.grammar;
+
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class LexerParser extends Parser {
@@ -14,8 +19,8 @@ public class LexerParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, NUMBER=8, OPERATION=9, 
-		WS=10, Minus=11;
+		T__0=1, T__1=2, OPERATION=3, NUMBER=4, ELEMENT=5, BRACE_OPEN=6, BRACE_CLOSE=7, 
+		MAP_FUN=8, FILTER_FUN=9, CHAIN=10, WS=11, Minus=12;
 	public static final int
 		RULE_constantExpression = 0, RULE_binaryExpression = 1, RULE_expression = 2, 
 		RULE_mapCall = 3, RULE_filterCall = 4, RULE_call = 5, RULE_callChain = 6, 
@@ -30,14 +35,15 @@ public class LexerParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'('", "')'", "'element'", "'map{'", "'}'", "'filter{'", "'%>%'"
+			null, "'('", "')'", null, null, "'element'", "'{'", "'}'", "'map'", "'filter'", 
+			"'%>%'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, "NUMBER", "OPERATION", 
-			"WS", "Minus"
+			null, null, null, "OPERATION", "NUMBER", "ELEMENT", "BRACE_OPEN", "BRACE_CLOSE", 
+			"MAP_FUN", "FILTER_FUN", "CHAIN", "WS", "Minus"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -106,11 +112,6 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitConstantExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitConstantExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ConstantExpressionContext constantExpression() throws RecognitionException {
@@ -173,11 +174,6 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitBinaryExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitBinaryExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final BinaryExpressionContext binaryExpression() throws RecognitionException {
@@ -210,11 +206,12 @@ public class LexerParser extends Parser {
 	}
 
 	public static class ExpressionContext extends ParserRuleContext {
-		public ConstantExpressionContext constantExpression() {
-			return getRuleContext(ConstantExpressionContext.class,0);
-		}
+		public TerminalNode ELEMENT() { return getToken(LexerParser.ELEMENT, 0); }
 		public BinaryExpressionContext binaryExpression() {
 			return getRuleContext(BinaryExpressionContext.class,0);
+		}
+		public ConstantExpressionContext constantExpression() {
+			return getRuleContext(ConstantExpressionContext.class,0);
 		}
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -228,11 +225,6 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ExpressionContext expression() throws RecognitionException {
@@ -242,26 +234,26 @@ public class LexerParser extends Parser {
 			setState(30);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case T__2:
+			case ELEMENT:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(27);
-				match(T__2);
+				match(ELEMENT);
+				}
+				break;
+			case T__0:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(28);
+				binaryExpression();
 				}
 				break;
 			case NUMBER:
 			case Minus:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(28);
-				constantExpression();
-				}
-				break;
-			case T__0:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(29);
-				binaryExpression();
+				constantExpression();
 				}
 				break;
 			default:
@@ -280,9 +272,12 @@ public class LexerParser extends Parser {
 	}
 
 	public static class MapCallContext extends ParserRuleContext {
+		public TerminalNode MAP_FUN() { return getToken(LexerParser.MAP_FUN, 0); }
+		public TerminalNode BRACE_OPEN() { return getToken(LexerParser.BRACE_OPEN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode BRACE_CLOSE() { return getToken(LexerParser.BRACE_CLOSE, 0); }
 		public MapCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -295,11 +290,6 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitMapCall(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitMapCall(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MapCallContext mapCall() throws RecognitionException {
@@ -309,11 +299,13 @@ public class LexerParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(32);
-			match(T__3);
+			match(MAP_FUN);
 			setState(33);
-			expression();
+			match(BRACE_OPEN);
 			setState(34);
-			match(T__4);
+			expression();
+			setState(35);
+			match(BRACE_CLOSE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -328,9 +320,12 @@ public class LexerParser extends Parser {
 	}
 
 	public static class FilterCallContext extends ParserRuleContext {
+		public TerminalNode FILTER_FUN() { return getToken(LexerParser.FILTER_FUN, 0); }
+		public TerminalNode BRACE_OPEN() { return getToken(LexerParser.BRACE_OPEN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode BRACE_CLOSE() { return getToken(LexerParser.BRACE_CLOSE, 0); }
 		public FilterCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -343,11 +338,6 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitFilterCall(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitFilterCall(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FilterCallContext filterCall() throws RecognitionException {
@@ -356,12 +346,14 @@ public class LexerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(36);
-			match(T__5);
 			setState(37);
-			expression();
+			match(FILTER_FUN);
 			setState(38);
-			match(T__4);
+			match(BRACE_OPEN);
+			setState(39);
+			expression();
+			setState(40);
+			match(BRACE_CLOSE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -394,31 +386,26 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitCall(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitCall(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CallContext call() throws RecognitionException {
 		CallContext _localctx = new CallContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_call);
 		try {
-			setState(42);
+			setState(44);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case T__3:
+			case MAP_FUN:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(40);
+				setState(42);
 				mapCall();
 				}
 				break;
-			case T__5:
+			case FILTER_FUN:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(41);
+				setState(43);
 				filterCall();
 				}
 				break;
@@ -441,6 +428,7 @@ public class LexerParser extends Parser {
 		public CallContext call() {
 			return getRuleContext(CallContext.class,0);
 		}
+		public TerminalNode CHAIN() { return getToken(LexerParser.CHAIN, 0); }
 		public CallChainContext callChain() {
 			return getRuleContext(CallChainContext.class,0);
 		}
@@ -456,35 +444,30 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitCallChain(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitCallChain(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CallChainContext callChain() throws RecognitionException {
 		CallChainContext _localctx = new CallChainContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_callChain);
 		try {
-			setState(49);
+			setState(51);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(44);
+				setState(46);
 				call();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(45);
-				call();
-				setState(46);
-				match(T__6);
 				setState(47);
+				call();
+				setState(48);
+				match(CHAIN);
+				setState(49);
 				callChain();
 				}
 				break;
@@ -521,11 +504,6 @@ public class LexerParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitParse(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LexerVisitor ) return ((LexerVisitor<? extends T>)visitor).visitParse(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ParseContext parse() throws RecognitionException {
@@ -535,21 +513,21 @@ public class LexerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(54);
+			setState(56);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__3 || _la==T__5) {
+			while (_la==MAP_FUN || _la==FILTER_FUN) {
 				{
 				{
-				setState(51);
+				setState(53);
 				callChain();
 				}
 				}
-				setState(56);
+				setState(58);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(57);
+			setState(59);
 			match(EOF);
 			}
 		}
@@ -565,22 +543,22 @@ public class LexerParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\r>\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16@\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\5\2\26"+
-		"\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\5\4!\n\4\3\5\3\5\3\5\3\5\3\6"+
-		"\3\6\3\6\3\6\3\7\3\7\5\7-\n\7\3\b\3\b\3\b\3\b\3\b\5\b\64\n\b\3\t\7\t\67"+
-		"\n\t\f\t\16\t:\13\t\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2;\2\25\3"+
-		"\2\2\2\4\27\3\2\2\2\6 \3\2\2\2\b\"\3\2\2\2\n&\3\2\2\2\f,\3\2\2\2\16\63"+
-		"\3\2\2\2\208\3\2\2\2\22\23\7\r\2\2\23\26\7\n\2\2\24\26\7\n\2\2\25\22\3"+
-		"\2\2\2\25\24\3\2\2\2\26\3\3\2\2\2\27\30\7\3\2\2\30\31\5\6\4\2\31\32\7"+
-		"\13\2\2\32\33\5\6\4\2\33\34\7\4\2\2\34\5\3\2\2\2\35!\7\5\2\2\36!\5\2\2"+
-		"\2\37!\5\4\3\2 \35\3\2\2\2 \36\3\2\2\2 \37\3\2\2\2!\7\3\2\2\2\"#\7\6\2"+
-		"\2#$\5\6\4\2$%\7\7\2\2%\t\3\2\2\2&\'\7\b\2\2\'(\5\6\4\2()\7\7\2\2)\13"+
-		"\3\2\2\2*-\5\b\5\2+-\5\n\6\2,*\3\2\2\2,+\3\2\2\2-\r\3\2\2\2.\64\5\f\7"+
-		"\2/\60\5\f\7\2\60\61\7\t\2\2\61\62\5\16\b\2\62\64\3\2\2\2\63.\3\2\2\2"+
-		"\63/\3\2\2\2\64\17\3\2\2\2\65\67\5\16\b\2\66\65\3\2\2\2\67:\3\2\2\28\66"+
-		"\3\2\2\289\3\2\2\29;\3\2\2\2:8\3\2\2\2;<\7\2\2\3<\21\3\2\2\2\7\25 ,\63"+
-		"8";
+		"\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\5\4!\n\4\3\5\3\5\3\5\3\5\3\5"+
+		"\3\6\3\6\3\6\3\6\3\6\3\7\3\7\5\7/\n\7\3\b\3\b\3\b\3\b\3\b\5\b\66\n\b\3"+
+		"\t\7\t9\n\t\f\t\16\t<\13\t\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2="+
+		"\2\25\3\2\2\2\4\27\3\2\2\2\6 \3\2\2\2\b\"\3\2\2\2\n\'\3\2\2\2\f.\3\2\2"+
+		"\2\16\65\3\2\2\2\20:\3\2\2\2\22\23\7\16\2\2\23\26\7\6\2\2\24\26\7\6\2"+
+		"\2\25\22\3\2\2\2\25\24\3\2\2\2\26\3\3\2\2\2\27\30\7\3\2\2\30\31\5\6\4"+
+		"\2\31\32\7\5\2\2\32\33\5\6\4\2\33\34\7\4\2\2\34\5\3\2\2\2\35!\7\7\2\2"+
+		"\36!\5\4\3\2\37!\5\2\2\2 \35\3\2\2\2 \36\3\2\2\2 \37\3\2\2\2!\7\3\2\2"+
+		"\2\"#\7\n\2\2#$\7\b\2\2$%\5\6\4\2%&\7\t\2\2&\t\3\2\2\2\'(\7\13\2\2()\7"+
+		"\b\2\2)*\5\6\4\2*+\7\t\2\2+\13\3\2\2\2,/\5\b\5\2-/\5\n\6\2.,\3\2\2\2."+
+		"-\3\2\2\2/\r\3\2\2\2\60\66\5\f\7\2\61\62\5\f\7\2\62\63\7\f\2\2\63\64\5"+
+		"\16\b\2\64\66\3\2\2\2\65\60\3\2\2\2\65\61\3\2\2\2\66\17\3\2\2\2\679\5"+
+		"\16\b\28\67\3\2\2\29<\3\2\2\2:8\3\2\2\2:;\3\2\2\2;=\3\2\2\2<:\3\2\2\2"+
+		"=>\7\2\2\3>\21\3\2\2\2\7\25 .\65:";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

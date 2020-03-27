@@ -1,10 +1,13 @@
 package ru.art2000.callchainsimplifier.expression
 
-import ru.art2000.callchainsimplifier.Value
 import kotlin.math.absoluteValue
 import kotlin.reflect.full.isSubclassOf
 
 open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Expression() {
+
+    companion object {
+        const val default = "element"
+    }
 
     var count: Int = 1
         private set
@@ -15,8 +18,6 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
     var real: Int = 0
         private set
 
-    val index: Int
-
     init {
         this.count = count
         this.power = power
@@ -24,30 +25,20 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
         if (count == 0)
             this.power = 0
 
-        @Suppress("UNNECESSARY_SAFE_CALL", "USELESS_ELVIS")
-//        index = ru.art2000.callchainsimplifier.Element.transformations?.size?.minus(1) ?: -1
-        index = 0
     }
 
     override fun doEval(): Expression {
         return this
     }
 
-    override val returnType: Value.Type
-        get() = Value.Type.INT
+    override val returnType: ValueType
+        get() = ValueType.INT
 
     override fun toString(): String {
 
         if (count == 0) {
             return real.toString()
         }
-
-//        val default = if (index >= 0) {
-//            if (ru.art2000.callchainsimplifier.Element.transformations[index]::class.isSubclassOf(this::class)) "element" else ru.art2000.callchainsimplifier.Element.transformations[index].toString()
-//        } else
-//            "element"
-
-        val default = "element"
 
         val imaginary = when {
             count == 1 && power == 1 -> default
@@ -226,7 +217,7 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        other?: return false
+        other ?: return false
         if (!other::class.isSubclassOf(this::class) && !this::class.isSubclassOf(other::class)) return false
 
         other as ElementExpression

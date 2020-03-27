@@ -1,7 +1,6 @@
 package ru.art2000.callchainsimplifier.expression
 
-import ru.art2000.callchainsimplifier.Element
-import ru.art2000.callchainsimplifier.Value
+import ru.art2000.callchainsimplifier.Simplifier
 import kotlin.reflect.full.isSubclassOf
 
 class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Expression) : Expression() {
@@ -41,6 +40,21 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
     }
 
     override fun unaryMinus(): Expression {
+
+        if (sign == BinarySign.GREATER) {
+            return BinaryExpression(
+                -operand1,
+                BinarySign.LESS,
+                -operand2
+            ).eval()
+        } else if (sign == BinarySign.LESS) {
+            return BinaryExpression(
+                -operand1,
+                BinarySign.GREATER,
+                -operand2
+            ).eval()
+        }
+
         return BinaryExpression(
             -operand1,
             sign,
@@ -80,8 +94,6 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
     }
 
     internal fun logicEval(): Expression {
-        //if we are here, then operand1 && operand2 - binary expressions
-
 
         if (sign == BinarySign.GREATER || sign == BinarySign.LESS) {
             val simplified = (operand1 - operand2).eval()
@@ -96,17 +108,23 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
                 simplified as ElementExpression
                 when {
                     simplified.count == 0 -> {
-                        return if (simplified < constantZero && sign == BinarySign.LESS || simplified > constantZero && sign == BinarySign.GREATER)
-                            Element.TRUE_FILTER
+                        return if (simplified < constantZero && sign == BinarySign.LESS
+                            || simplified > constantZero && sign == BinarySign.GREATER
+                        )
+                            Simplifier.TRUE_FILTER
                         else
-                            Element.FALSE_FILTER
+                            Simplifier.FALSE_FILTER
                     }
                     simplified < constantZero -> return BinaryExpression(
-                        -simplified,
+                        ElementExpression(-simplified.count, simplified.power),
                         if (sign == BinarySign.GREATER) BinarySign.LESS else BinarySign.GREATER,
-                        constantZero
+                        ConstantExpression(simplified.real)
                     )
-
+                    else -> return BinaryExpression(
+                        ElementExpression(simplified.count, simplified.power),
+                        sign,
+                        ConstantExpression(-simplified.real)
+                    )
                 }
             }
             return BinaryExpression(
@@ -122,9 +140,9 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
             when {
                 (operand1.count == operand2.count && operand1.power == operand2.power) -> {
                     return if (operand1.real == operand2.real)
-                        Element.TRUE_FILTER
+                        Simplifier.TRUE_FILTER
                     else
-                        Element.FALSE_FILTER
+                        Simplifier.FALSE_FILTER
                 }
                 else -> {
                     val simplified = (operand1 - operand2).eval()
@@ -132,15 +150,21 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
                         return BinaryExpression(
                             simplified.operand1,
                             sign,
-                            -simplified.operand2
+                            simplified.operand2
                         )
                     }
-                    if (simplified::class.isSubclassOf(ElementExpression::class) && (simplified as ElementExpression) < constantZero) {
-                        return BinaryExpression(
-                            -simplified,
-                            sign,
-                            constantZero
-                        )
+                    if (simplified::class.isSubclassOf(ElementExpression::class)) {
+                        return if ((simplified as ElementExpression) < constantZero)
+                            BinaryExpression(
+                                ElementExpression(-simplified.count, simplified.power),
+                                BinarySign.EQUAL,
+                                ConstantExpression(simplified.real)
+                            ) else
+                            BinaryExpression(
+                                ElementExpression(simplified.count, simplified.power),
+                                BinarySign.EQUAL,
+                                ConstantExpression(-simplified.real)
+                            )
                     }
 
                     return BinaryExpression(
@@ -156,8 +180,8 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
         operand2 as BinaryExpression
 
         if (sign == BinarySign.AND) {
-            if (operand1 == Element.FALSE_FILTER || operand2 == Element.FALSE_FILTER)
-                return Element.FALSE_FILTER
+            if (operand1 == Simplifier.FALSE_FILTER || operand2 == Simplifier.FALSE_FILTER)
+                return Simplifier.FALSE_FILTER
 
 
             operand1.operand1 as ElementExpression
@@ -176,7 +200,7 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
                 }
             } else {
                 if (operand1.operand1 == operand2.operand1 && operand1.operand2 == operand2.operand2) {
-                    return Element.FALSE_FILTER
+                    return Simplifier.FALSE_FILTER
                 }
             }
         } else if (sign == BinarySign.OR) {
@@ -195,7 +219,7 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
                 }
             } else {
                 if (operand1.operand1 == operand2.operand1 && operand1.operand2 == operand2.operand2)
-                    return Element.TRUE_FILTER
+                    return Simplifier.TRUE_FILTER
             }
         }
 
@@ -226,6 +250,6 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
         return result
     }
 
-    override val returnType: Value.Type
+    override val returnType: ValueType
         get() = sign.returnType
 }
