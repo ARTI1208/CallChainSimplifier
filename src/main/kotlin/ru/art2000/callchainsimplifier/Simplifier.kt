@@ -51,6 +51,8 @@ class Simplifier {
                 f
             ).logicEval()
         }
+
+        applyTransformation(map)
     }
 
     private fun applyTransformation(t: Expression) {
