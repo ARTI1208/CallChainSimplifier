@@ -27,7 +27,15 @@ class ElementExpressionTest {
         val nonEvalRight = ElementExpression(2, 4, -5)
 
         assertEquals(
-            BinaryExpression(nonEvalLeft, BinaryExpression.Sign.PLUS, nonEvalRight),
+            BinaryExpression(
+                BinaryExpression(
+                    ElementExpression(3, 2),
+                    BinarySign.PLUS,
+                    ElementExpression(2, 4)
+                ),
+                BinarySign.PLUS,
+                ConstantExpression(2)
+            ),
             nonEvalLeft + nonEvalRight
         )
     }
@@ -47,9 +55,9 @@ class ElementExpressionTest {
             BinaryExpression(
                 BinaryExpression(
                     ElementExpression(3, 2, 0),
-                    BinaryExpression.Sign.MINUS,
+                    BinarySign.MINUS,
                     ElementExpression(2, 4, 0)
-                ), BinaryExpression.Sign.PLUS, ConstantExpression(12)
+                ), BinarySign.PLUS, ConstantExpression(12)
             ), nonEvalLeft - nonEvalRight
         )
     }
@@ -59,9 +67,13 @@ class ElementExpressionTest {
 
         assertEquals(
             BinaryExpression(
-                ElementExpression(6, 8, -25),
-                BinaryExpression.Sign.PLUS,
-                ElementExpression(-5, 4, 0)
+                BinaryExpression(
+                    ElementExpression(6, 8),
+                    BinarySign.PLUS,
+                    ElementExpression(-5, 4)
+                ),
+                BinarySign.PLUS,
+                ConstantExpression(-25)
             ),
 
             ElementExpression(3, 4, 5) * ElementExpression(2, 4, -5)
@@ -76,10 +88,10 @@ class ElementExpressionTest {
         assertEquals(
             BinaryExpression(
                 ElementExpression(6, 6, -35),
-                BinaryExpression.Sign.PLUS,
+                BinarySign.PLUS,
                 BinaryExpression(
                     ElementExpression(14, 4),
-                    BinaryExpression.Sign.PLUS,
+                    BinarySign.PLUS,
                     ElementExpression(-15, 2)
                 )
             ),

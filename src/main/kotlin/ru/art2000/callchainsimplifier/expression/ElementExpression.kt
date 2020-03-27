@@ -81,7 +81,7 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
             is ElementExpression -> plus(e)
             is BinaryExpression -> BinaryExpression(
                 this,
-                BinaryExpression.Sign.PLUS,
+                BinarySign.PLUS,
                 e
             ).eval()
             else -> throw Exception("Unknown expr")
@@ -93,7 +93,7 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
             is ElementExpression -> minus(e)
             is BinaryExpression -> BinaryExpression(
                 this,
-                BinaryExpression.Sign.MINUS,
+                BinarySign.MINUS,
                 e
             ).eval()
             else -> throw Exception("Unknown expr")
@@ -105,7 +105,7 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
             is ElementExpression -> times(e)
             is BinaryExpression -> BinaryExpression(
                 this,
-                BinaryExpression.Sign.MULTIPLY,
+                BinarySign.MULTIPLY,
                 e
             ).eval()
             else -> throw Exception("Unknown expr")
@@ -128,23 +128,28 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
             )
         }
 
-        if (power != element.power) {
-            return BinaryExpression(
-                this,
-                BinaryExpression.Sign.PLUS,
-                element
+        return if (power == element.power)
+            ElementExpression(
+                count + element.count,
+                element.power,
+                real + element.real
             )
+        else {
+            (BinaryExpression(
+                ElementExpression(count, power, 0),
+                BinarySign.PLUS,
+                ElementExpression(
+                    element.count,
+                    element.power,
+                    0
+                )
+            ).also { it.isEvaluable = false } + ConstantExpression(
+                real + element.real
+            )).eval()
         }
-
-        return ElementExpression(
-            count + element.count,
-            power,
-            real + element.real
-        )
     }
 
     operator fun minus(element: ElementExpression): Expression {
-        println("t: $this --- $element")
         if (count * element.count == 0) {
             val thisFactor = if (count == 0) 0 else 1
             val elementFactor = if (element.count == 0) 0 else 1
@@ -163,10 +168,9 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
                 real - element.real
             )
         else {
-            println("kk")
             (BinaryExpression(
                 ElementExpression(count, power, 0),
-                BinaryExpression.Sign.MINUS,
+                BinarySign.MINUS,
                 ElementExpression(
                     element.count,
                     element.power,
@@ -202,10 +206,10 @@ open class ElementExpression(count: Int = 1, power: Int = 1, real: Int = 0) : Ex
                 power + element.power,
                 real * element.real
             ),
-            BinaryExpression.Sign.PLUS,
+            BinarySign.PLUS,
             BinaryExpression(
                 secondTerm,
-                BinaryExpression.Sign.PLUS,
+                BinarySign.PLUS,
                 thirdTerm
             ).eval()
         ).eval()

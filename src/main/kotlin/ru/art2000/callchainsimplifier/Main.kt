@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.antlr.v4.runtime.tree.TerminalNode
 import ru.art2000.callchainsimplifier.expression.BinaryExpression
+import ru.art2000.callchainsimplifier.expression.BinarySign
 import ru.art2000.callchainsimplifier.expression.ElementExpression
 import ru.art2000.callchainsimplifier.expression.Expression
 
@@ -60,7 +61,6 @@ fun main() {
     }
 
     println(Element)
-    println(Element.filter == Element.FALSE_FILTER)
 }
 
 val callToParam = mapOf(
@@ -95,7 +95,7 @@ fun evaluateExpression(expressionContext: LexerParser.ExpressionContext): Expres
                 )
             )
 
-            return Element.transformations.last()
+            return Element.map
         }
         expressionContext.constantExpression() != null -> {
             require(
@@ -141,7 +141,7 @@ fun applyBinaryOperation(
     expr2: LexerParser.ExpressionContext
 ): Expression {
 
-    val sign = BinaryExpression.Sign.values().find { it.text == signNode.text } ?: throw Exception("Unknown sign")
+    val sign = BinarySign.values().find { it.text == signNode.text } ?: throw Exception("Unknown sign")
     return BinaryExpression(
         evaluateExpression(expr),
         sign,
