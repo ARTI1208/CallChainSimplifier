@@ -1,7 +1,7 @@
 grammar Lexer;
 
 @header{
-    package ru.art2000.callchainsimplifier.grammar;
+package ru.art2000.callchainsimplifier.grammar;
 }
 
 //<digit>   ::= “0” | “1" | “2” | “3" | “4” | “5" | “6” | “7" | “8” | “9"
@@ -15,29 +15,11 @@ grammar Lexer;
 //<call> ::= <map-call> | <filter-call>
 //<call-chain> ::= <call> | <call> “%>%” <call-chain>
 
-fragment Digit: [0-9];
+parse: callChain* EOF;
 
-fragment Minus: '-';
+binaryExpression: PAREN_OPEN expression (OPERATION | MINUS) expression PAREN_CLOSE;
 
-//SUB: '-';
-
-OPERATION: '+' | '-' | '*' | '>' | '<' | '=' | '&' | '|';
-
-NUMBER: Digit | Digit NUMBER;
-
-constantExpression: (Minus NUMBER) | NUMBER;
-
-ELEMENT: 'element';
-
-binaryExpression: '(' expression OPERATION expression ')';
-
-expression: ELEMENT | binaryExpression | constantExpression ;
-
-BRACE_OPEN: '{';
-BRACE_CLOSE: '}';
-
-MAP_FUN: 'map';
-FILTER_FUN: 'filter';
+expression: ELEMENT | binaryExpression | MINUS? NUMBER;
 
 mapCall: MAP_FUN BRACE_OPEN expression BRACE_CLOSE;
 
@@ -45,10 +27,27 @@ filterCall: FILTER_FUN BRACE_OPEN expression BRACE_CLOSE;
 
 call: mapCall | filterCall;
 
-CHAIN: '%>%';
-
 callChain: call | call CHAIN callChain;
 
-parse: callChain* EOF;
+MAP_FUN: 'map';
+FILTER_FUN: 'filter';
 
-WS  :  [ \t\r\n\u000C]+ -> skip;
+BRACE_OPEN: '{';
+BRACE_CLOSE: '}';
+
+PAREN_OPEN: '(';
+PAREN_CLOSE: ')';
+
+ELEMENT: 'element';
+NUMBER: Digit | Digit NUMBER;
+
+MINUS: '-';
+OPERATION: '+' |'*' | '>' | '<' | '=' | '&' | '|';
+
+CHAIN: '%>%';
+
+
+fragment Digit: [0-9];
+
+
+WS:  [ \t\r\n\u000C]+ -> skip;

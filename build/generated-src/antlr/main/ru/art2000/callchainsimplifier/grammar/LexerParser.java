@@ -1,6 +1,6 @@
 // Generated from ru/art2000/callchainsimplifier/grammar/Lexer.g4 by ANTLR 4.8
 
-    package ru.art2000.callchainsimplifier.grammar;
+package ru.art2000.callchainsimplifier.grammar;
 
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -19,31 +19,30 @@ public class LexerParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, OPERATION=3, NUMBER=4, ELEMENT=5, BRACE_OPEN=6, BRACE_CLOSE=7, 
-		MAP_FUN=8, FILTER_FUN=9, CHAIN=10, WS=11, Minus=12;
+		MAP_FUN=1, FILTER_FUN=2, BRACE_OPEN=3, BRACE_CLOSE=4, PAREN_OPEN=5, PAREN_CLOSE=6, 
+		ELEMENT=7, NUMBER=8, MINUS=9, OPERATION=10, CHAIN=11, WS=12;
 	public static final int
-		RULE_constantExpression = 0, RULE_binaryExpression = 1, RULE_expression = 2, 
-		RULE_mapCall = 3, RULE_filterCall = 4, RULE_call = 5, RULE_callChain = 6, 
-		RULE_parse = 7;
+		RULE_parse = 0, RULE_binaryExpression = 1, RULE_expression = 2, RULE_mapCall = 3, 
+		RULE_filterCall = 4, RULE_call = 5, RULE_callChain = 6;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"constantExpression", "binaryExpression", "expression", "mapCall", "filterCall", 
-			"call", "callChain", "parse"
+			"parse", "binaryExpression", "expression", "mapCall", "filterCall", "call", 
+			"callChain"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'('", "')'", null, null, "'element'", "'{'", "'}'", "'map'", "'filter'", 
-			"'%>%'"
+			null, "'map'", "'filter'", "'{'", "'}'", "'('", "')'", "'element'", null, 
+			"'-'", null, "'%>%'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, "OPERATION", "NUMBER", "ELEMENT", "BRACE_OPEN", "BRACE_CLOSE", 
-			"MAP_FUN", "FILTER_FUN", "CHAIN", "WS", "Minus"
+			null, "MAP_FUN", "FILTER_FUN", "BRACE_OPEN", "BRACE_CLOSE", "PAREN_OPEN", 
+			"PAREN_CLOSE", "ELEMENT", "NUMBER", "MINUS", "OPERATION", "CHAIN", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -97,50 +96,51 @@ public class LexerParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
-	public static class ConstantExpressionContext extends ParserRuleContext {
-		public TerminalNode Minus() { return getToken(LexerParser.Minus, 0); }
-		public TerminalNode NUMBER() { return getToken(LexerParser.NUMBER, 0); }
-		public ConstantExpressionContext(ParserRuleContext parent, int invokingState) {
+	public static class ParseContext extends ParserRuleContext {
+		public TerminalNode EOF() { return getToken(LexerParser.EOF, 0); }
+		public List<CallChainContext> callChain() {
+			return getRuleContexts(CallChainContext.class);
+		}
+		public CallChainContext callChain(int i) {
+			return getRuleContext(CallChainContext.class,i);
+		}
+		public ParseContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_constantExpression; }
+		@Override public int getRuleIndex() { return RULE_parse; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LexerListener ) ((LexerListener)listener).enterConstantExpression(this);
+			if ( listener instanceof LexerListener ) ((LexerListener)listener).enterParse(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitConstantExpression(this);
+			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitParse(this);
 		}
 	}
 
-	public final ConstantExpressionContext constantExpression() throws RecognitionException {
-		ConstantExpressionContext _localctx = new ConstantExpressionContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_constantExpression);
+	public final ParseContext parse() throws RecognitionException {
+		ParseContext _localctx = new ParseContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_parse);
+		int _la;
 		try {
-			setState(19);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(17);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case Minus:
-				enterOuterAlt(_localctx, 1);
+			_la = _input.LA(1);
+			while (_la==MAP_FUN || _la==FILTER_FUN) {
 				{
 				{
-				setState(16);
-				match(Minus);
-				setState(17);
-				match(NUMBER);
+				setState(14);
+				callChain();
 				}
 				}
-				break;
-			case NUMBER:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(18);
-				match(NUMBER);
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+				setState(19);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(20);
+			match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -155,13 +155,16 @@ public class LexerParser extends Parser {
 	}
 
 	public static class BinaryExpressionContext extends ParserRuleContext {
+		public TerminalNode PAREN_OPEN() { return getToken(LexerParser.PAREN_OPEN, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
+		public TerminalNode PAREN_CLOSE() { return getToken(LexerParser.PAREN_CLOSE, 0); }
 		public TerminalNode OPERATION() { return getToken(LexerParser.OPERATION, 0); }
+		public TerminalNode MINUS() { return getToken(LexerParser.MINUS, 0); }
 		public BinaryExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -179,19 +182,28 @@ public class LexerParser extends Parser {
 	public final BinaryExpressionContext binaryExpression() throws RecognitionException {
 		BinaryExpressionContext _localctx = new BinaryExpressionContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_binaryExpression);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(21);
-			match(T__0);
 			setState(22);
-			expression();
+			match(PAREN_OPEN);
 			setState(23);
-			match(OPERATION);
-			setState(24);
 			expression();
+			setState(24);
+			_la = _input.LA(1);
+			if ( !(_la==MINUS || _la==OPERATION) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
 			setState(25);
-			match(T__1);
+			expression();
+			setState(26);
+			match(PAREN_CLOSE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -210,9 +222,8 @@ public class LexerParser extends Parser {
 		public BinaryExpressionContext binaryExpression() {
 			return getRuleContext(BinaryExpressionContext.class,0);
 		}
-		public ConstantExpressionContext constantExpression() {
-			return getRuleContext(ConstantExpressionContext.class,0);
-		}
+		public TerminalNode NUMBER() { return getToken(LexerParser.NUMBER, 0); }
+		public TerminalNode MINUS() { return getToken(LexerParser.MINUS, 0); }
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -230,30 +241,41 @@ public class LexerParser extends Parser {
 	public final ExpressionContext expression() throws RecognitionException {
 		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_expression);
+		int _la;
 		try {
-			setState(30);
+			setState(34);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ELEMENT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(27);
+				setState(28);
 				match(ELEMENT);
 				}
 				break;
-			case T__0:
+			case PAREN_OPEN:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(28);
+				setState(29);
 				binaryExpression();
 				}
 				break;
 			case NUMBER:
-			case Minus:
+			case MINUS:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(29);
-				constantExpression();
+				setState(31);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la==MINUS) {
+					{
+					setState(30);
+					match(MINUS);
+					}
+				}
+
+				setState(33);
+				match(NUMBER);
 				}
 				break;
 			default:
@@ -298,13 +320,13 @@ public class LexerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(32);
+			setState(36);
 			match(MAP_FUN);
-			setState(33);
+			setState(37);
 			match(BRACE_OPEN);
-			setState(34);
+			setState(38);
 			expression();
-			setState(35);
+			setState(39);
 			match(BRACE_CLOSE);
 			}
 		}
@@ -346,13 +368,13 @@ public class LexerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(37);
+			setState(41);
 			match(FILTER_FUN);
-			setState(38);
+			setState(42);
 			match(BRACE_OPEN);
-			setState(39);
+			setState(43);
 			expression();
-			setState(40);
+			setState(44);
 			match(BRACE_CLOSE);
 			}
 		}
@@ -392,20 +414,20 @@ public class LexerParser extends Parser {
 		CallContext _localctx = new CallContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_call);
 		try {
-			setState(44);
+			setState(48);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case MAP_FUN:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(42);
+				setState(46);
 				mapCall();
 				}
 				break;
 			case FILTER_FUN:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(43);
+				setState(47);
 				filterCall();
 				}
 				break;
@@ -450,85 +472,27 @@ public class LexerParser extends Parser {
 		CallChainContext _localctx = new CallChainContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_callChain);
 		try {
-			setState(51);
+			setState(55);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(46);
+				setState(50);
 				call();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(47);
+				setState(51);
 				call();
-				setState(48);
+				setState(52);
 				match(CHAIN);
-				setState(49);
-				callChain();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class ParseContext extends ParserRuleContext {
-		public TerminalNode EOF() { return getToken(LexerParser.EOF, 0); }
-		public List<CallChainContext> callChain() {
-			return getRuleContexts(CallChainContext.class);
-		}
-		public CallChainContext callChain(int i) {
-			return getRuleContext(CallChainContext.class,i);
-		}
-		public ParseContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_parse; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LexerListener ) ((LexerListener)listener).enterParse(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LexerListener ) ((LexerListener)listener).exitParse(this);
-		}
-	}
-
-	public final ParseContext parse() throws RecognitionException {
-		ParseContext _localctx = new ParseContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_parse);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(56);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==MAP_FUN || _la==FILTER_FUN) {
-				{
-				{
 				setState(53);
 				callChain();
 				}
-				}
-				setState(58);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-			}
-			setState(59);
-			match(EOF);
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -543,22 +507,21 @@ public class LexerParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16@\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\5\2\26"+
-		"\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\5\4!\n\4\3\5\3\5\3\5\3\5\3\5"+
-		"\3\6\3\6\3\6\3\6\3\6\3\7\3\7\5\7/\n\7\3\b\3\b\3\b\3\b\3\b\5\b\66\n\b\3"+
-		"\t\7\t9\n\t\f\t\16\t<\13\t\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2="+
-		"\2\25\3\2\2\2\4\27\3\2\2\2\6 \3\2\2\2\b\"\3\2\2\2\n\'\3\2\2\2\f.\3\2\2"+
-		"\2\16\65\3\2\2\2\20:\3\2\2\2\22\23\7\16\2\2\23\26\7\6\2\2\24\26\7\6\2"+
-		"\2\25\22\3\2\2\2\25\24\3\2\2\2\26\3\3\2\2\2\27\30\7\3\2\2\30\31\5\6\4"+
-		"\2\31\32\7\5\2\2\32\33\5\6\4\2\33\34\7\4\2\2\34\5\3\2\2\2\35!\7\7\2\2"+
-		"\36!\5\4\3\2\37!\5\2\2\2 \35\3\2\2\2 \36\3\2\2\2 \37\3\2\2\2!\7\3\2\2"+
-		"\2\"#\7\n\2\2#$\7\b\2\2$%\5\6\4\2%&\7\t\2\2&\t\3\2\2\2\'(\7\13\2\2()\7"+
-		"\b\2\2)*\5\6\4\2*+\7\t\2\2+\13\3\2\2\2,/\5\b\5\2-/\5\n\6\2.,\3\2\2\2."+
-		"-\3\2\2\2/\r\3\2\2\2\60\66\5\f\7\2\61\62\5\f\7\2\62\63\7\f\2\2\63\64\5"+
-		"\16\b\2\64\66\3\2\2\2\65\60\3\2\2\2\65\61\3\2\2\2\66\17\3\2\2\2\679\5"+
-		"\16\b\28\67\3\2\2\29<\3\2\2\2:8\3\2\2\2:;\3\2\2\2;=\3\2\2\2<:\3\2\2\2"+
-		"=>\7\2\2\3>\21\3\2\2\2\7\25 .\65:";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16<\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\7\2\22\n\2\f\2\16\2\25"+
+		"\13\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\5\4\"\n\4\3\4\5\4%\n"+
+		"\4\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\7\3\7\5\7\63\n\7\3\b\3\b"+
+		"\3\b\3\b\3\b\5\b:\n\b\3\b\2\2\t\2\4\6\b\n\f\16\2\3\3\2\13\f\2:\2\23\3"+
+		"\2\2\2\4\30\3\2\2\2\6$\3\2\2\2\b&\3\2\2\2\n+\3\2\2\2\f\62\3\2\2\2\169"+
+		"\3\2\2\2\20\22\5\16\b\2\21\20\3\2\2\2\22\25\3\2\2\2\23\21\3\2\2\2\23\24"+
+		"\3\2\2\2\24\26\3\2\2\2\25\23\3\2\2\2\26\27\7\2\2\3\27\3\3\2\2\2\30\31"+
+		"\7\7\2\2\31\32\5\6\4\2\32\33\t\2\2\2\33\34\5\6\4\2\34\35\7\b\2\2\35\5"+
+		"\3\2\2\2\36%\7\t\2\2\37%\5\4\3\2 \"\7\13\2\2! \3\2\2\2!\"\3\2\2\2\"#\3"+
+		"\2\2\2#%\7\n\2\2$\36\3\2\2\2$\37\3\2\2\2$!\3\2\2\2%\7\3\2\2\2&\'\7\3\2"+
+		"\2\'(\7\5\2\2()\5\6\4\2)*\7\6\2\2*\t\3\2\2\2+,\7\4\2\2,-\7\5\2\2-.\5\6"+
+		"\4\2./\7\6\2\2/\13\3\2\2\2\60\63\5\b\5\2\61\63\5\n\6\2\62\60\3\2\2\2\62"+
+		"\61\3\2\2\2\63\r\3\2\2\2\64:\5\f\7\2\65\66\5\f\7\2\66\67\7\r\2\2\678\5"+
+		"\16\b\28:\3\2\2\29\64\3\2\2\29\65\3\2\2\2:\17\3\2\2\2\7\23!$\629";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

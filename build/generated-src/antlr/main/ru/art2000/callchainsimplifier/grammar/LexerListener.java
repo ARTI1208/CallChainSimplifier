@@ -1,6 +1,6 @@
 // Generated from ru/art2000/callchainsimplifier/grammar/Lexer.g4 by ANTLR 4.8
 
-    package ru.art2000.callchainsimplifier.grammar;
+package ru.art2000.callchainsimplifier.grammar;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -10,15 +10,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface LexerListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link LexerParser#constantExpression}.
+	 * Enter a parse tree produced by {@link LexerParser#parse}.
 	 * @param ctx the parse tree
 	 */
-	void enterConstantExpression(LexerParser.ConstantExpressionContext ctx);
+	void enterParse(LexerParser.ParseContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LexerParser#constantExpression}.
+	 * Exit a parse tree produced by {@link LexerParser#parse}.
 	 * @param ctx the parse tree
 	 */
-	void exitConstantExpression(LexerParser.ConstantExpressionContext ctx);
+	void exitParse(LexerParser.ParseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LexerParser#binaryExpression}.
 	 * @param ctx the parse tree
@@ -79,14 +79,4 @@ public interface LexerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCallChain(LexerParser.CallChainContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link LexerParser#parse}.
-	 * @param ctx the parse tree
-	 */
-	void enterParse(LexerParser.ParseContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LexerParser#parse}.
-	 * @param ctx the parse tree
-	 */
-	void exitParse(LexerParser.ParseContext ctx);
 }

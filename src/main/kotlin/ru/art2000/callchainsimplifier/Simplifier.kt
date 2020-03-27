@@ -59,7 +59,7 @@ class Simplifier {
     }
 
     override fun toString(): String {
-        return "filter{$filter}%>%map{${map}}"
+        return "filter{$filter}%>%map{$map}"
     }
 
     fun simplify(input: String): String {
@@ -128,6 +128,7 @@ class Simplifier {
     }
 
     private fun evaluateExpression(expressionContext: LexerParser.ExpressionContext): Expression {
+
         when {
             expressionContext.text == "element" -> {
                 require(
@@ -139,7 +140,7 @@ class Simplifier {
 
                 return map
             }
-            expressionContext.constantExpression() != null -> {
+            expressionContext.NUMBER() != null -> {
                 require(
                     checkHasParentOfType(
                         expressionContext,
@@ -147,20 +148,24 @@ class Simplifier {
                     )
                 )
 
+                val sign = if (expressionContext.MINUS() == null) 1 else -1
+
                 return ElementExpression(
                     0,
                     0,
-                    expressionContext.constantExpression().text.toInt()
+                    sign * expressionContext.NUMBER().text.toInt()
                 )
             }
             expressionContext.binaryExpression() != null -> {
 
                 val binaryExpr = expressionContext.binaryExpression()
 
+                val signNode = if (binaryExpr.OPERATION() != null) binaryExpr.OPERATION() else binaryExpr.MINUS()
+
                 val binaryExpression =
                     applyBinaryOperation(
                         binaryExpr.expression(0),
-                        binaryExpr.OPERATION(),
+                        signNode,
                         binaryExpr.expression(1)
                     )
                 require(

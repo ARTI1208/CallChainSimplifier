@@ -1,6 +1,6 @@
 // Generated from ru/art2000/callchainsimplifier/grammar/Lexer.g4 by ANTLR 4.8
 
-    package ru.art2000.callchainsimplifier.grammar;
+package ru.art2000.callchainsimplifier.grammar;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -18,13 +18,13 @@ public class LexerBaseListener implements LexerListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConstantExpression(LexerParser.ConstantExpressionContext ctx) { }
+	@Override public void enterParse(LexerParser.ParseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitConstantExpression(LexerParser.ConstantExpressionContext ctx) { }
+	@Override public void exitParse(LexerParser.ParseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -97,18 +97,6 @@ public class LexerBaseListener implements LexerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCallChain(LexerParser.CallChainContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParse(LexerParser.ParseContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParse(LexerParser.ParseContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

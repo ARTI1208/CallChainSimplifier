@@ -16,6 +16,17 @@ class BinaryExpression(operand1: Expression, val sign: BinarySign, operand2: Exp
     }
 
     override fun plus(e: Expression): Expression {
+//        if (e::class.isSubclassOf(ElementExpression::class)) {
+//            e as ElementExpression
+//            if (e.count == 0 && e.real < 0) {
+//                return BinaryExpression(
+//                    this,
+//                    BinarySign.MINUS,
+//                    ConstantExpression(-e.real)
+//                )
+//            }
+//        }
+
         return BinaryExpression(
             this,
             BinarySign.PLUS,
